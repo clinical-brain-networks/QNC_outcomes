@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "strategy": ["high_pass"]
+  },
+  "simple": {
+    "denoise_strategy": "simple"
+  },
+  "simple+gsr": {
+    "denoise_strategy": "simple",
+    "global_signal": "basic"
+  },
+  "Ciric36p": {
+    "denoise_strategy": "scrubbing",
+    "motion": "full",
+    "wm_csf": "full",
+    "global_signal": "full",
+    "demean": "True",
+    "fd_threshold": 0.5,
+    "scrub": 0
+  },
+  "butterworth_0.01_0.10": {
+    "filter": "butterworth",
+    "high_pass": 0.01,
+    "low_pass": 0.10
+  }
+}

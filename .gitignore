@@ -5,3 +5,4 @@ writing/
 trash/
 code/imaging_workflows/.snakemake
 code/imaging_workflows/__*
+figures/
