@@ -3,3 +3,5 @@ code/__*
 writing/
 .DS_Store
 trash/
+code/imaging_workflows/.snakemake
+code/imaging_workflows/__*
