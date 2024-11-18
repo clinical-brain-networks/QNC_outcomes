@@ -1,0 +1,28 @@
+
+fmriprep_dir: "/home/lukeh/hpcworking/lukeH/projects/QNC_outcomes/data/derivatives/fmriprep_24.0.1/"
+out_data: "/home/lukeh/hpcworking/lukeH/projects/QNC_outcomes/data/derivatives/"
+pybids_inputs:
+  bold:
+    filters:
+      suffix: "bold"
+      extension: ".nii.gz"
+      space: "MNI152NLin6Asym"
+      datatype: "func"
+      task: "rest"
+      res: "02"
+    wildcards:
+      - subject
+      - session
+
+denoise:
+  - "Ciric36p"
+
+filter:
+  - "butterworth_0.01_0.10"
+
+smooth:
+  - 4
+
+radius:
+  - 5
+  - 10

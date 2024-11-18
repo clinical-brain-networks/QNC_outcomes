@@ -1,0 +1,95 @@
+from snakebids import bids, generate_inputs
+configfile: 'config.yml'
+
+# organise inputs
+inputs = generate_inputs(
+    bids_dir=config['fmriprep_dir'],
+    pybids_inputs=config['pybids_inputs'])
+
+# # for testing only
+# inputs.subjects = sorted(inputs.subjects)[0:1]
+# inputs.zip_lists['bold']['subject'] = sorted(inputs.subjects)
+# print(inputs.subjects)
+
+# organise outputs
+rule all:
+    input:
+        inputs['bold'].expand(
+            bids(
+                root=config['out_data']+'fmriprep_24.0.1_denoised_smoothed_ts/',
+                denoise='{denoise}',
+                filter='{filter}',
+                smooth='{smooth}',
+                radius='{radius}',
+                suffix='.csv',
+                **inputs['bold'].wildcards
+                ),
+                denoise=config['denoise'],
+                filter=config['filter'],
+                smooth=config['smooth'],
+                radius=config['radius'])
+
+
+rule denoise:
+    input:
+        inputs['bold'].path
+
+    output:
+        bids(
+            root=config['out_data']+'fmriprep_24.0.1_denoised/',
+            denoise='{denoise}',
+            filter='{filter}',
+            suffix='bold.nii.gz',
+            **inputs['bold'].wildcards
+            )
+    shell:
+        'python denoise.py --input {input} --denoise_strategy {wildcards.denoise} --filter_strategy {wildcards.filter} --output {output}'
+
+rule smooth:
+    input:
+        bids(
+            root=config['out_data']+'fmriprep_24.0.1_denoised/',
+            denoise='{denoise}',
+            filter='{filter}',
+            suffix='bold.nii.gz',
+            **inputs['bold'].wildcards
+            )
+
+    output:
+        bids(
+            root=config['out_data']+'fmriprep_24.0.1_denoised_smoothed/',
+            denoise='{denoise}',
+            filter='{filter}',
+            smooth='{smooth}',
+            suffix='bold.nii.gz',
+            **inputs['bold'].wildcards
+            )
+    shell:
+        'python smooth.py --input {input} --fwhm {wildcards.smooth} --output {output}'
+
+
+rule extract_ts:
+    input:
+        img=bids(
+            root=config['out_data']+'fmriprep_24.0.1_denoised_smoothed/',
+            denoise='{denoise}',
+            filter='{filter}',
+            smooth='{smooth}',
+            suffix='bold.nii.gz',
+            **inputs['bold'].wildcards
+            ),
+        mask="/home/lukeh/hpcworking/lukeH/projects/QNC_outcomes/data/derivatives/fmriprep_24.0.1/sub-{subject}/ses-{session}/func/sub-{subject}_ses-{session}_task-rest_space-MNI152NLin6Asym_res-02_desc-brain_mask.nii.gz"
+
+
+    output:
+        bids(
+            root=config['out_data']+'fmriprep_24.0.1_denoised_smoothed_ts/',
+            denoise='{denoise}',
+            filter='{filter}',
+            smooth='{smooth}',
+            radius='{radius}',
+            suffix='.csv',
+            **inputs['bold'].wildcards
+            )
+    shell:
+        'python extract_ts.py --input {input.img} --mask {input.mask} --output {output} --radius {wildcards.radius}'

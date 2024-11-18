@@ -1,0 +1,50 @@
+{"post_op": [
+    {
+      "cmd": "pydeface --outfile dst_file src_file",
+      "datatype": "anat",
+      "suffix": [
+        "T1w"
+      ]
+    }
+  ],
+    "descriptions":[
+        {
+        "id": "task_rest",
+        "datatype": "func",
+        "suffix": "bold",
+        "custom_entities": "task-rest",
+        "criteria": {
+            "ProtocolName": "*REST*PA*"
+            }
+        },
+        {
+            "datatype": "fmap",
+            "suffix": "epi",
+            "custom_entities": "dir-AP",
+            "criteria": {
+                "SeriesDescription": "*FMAP_AP*"
+            },
+            "sidecar_changes": {
+                "intendedFor": "task_rest"
+            }
+        },
+        {
+            "datatype": "fmap",
+            "suffix": "epi",
+            "custom_entities": "dir-PA",
+            "criteria": {
+                "SeriesDescription": "*FMAP_PA*"
+            },
+            "sidecar_changes": {
+                "intendedFor": "task_rest"
+            }
+        },
+        {
+            "datatype": "anat",
+            "suffix": "T1w",
+            "criteria": {
+               "SeriesDescription": "MPRAGE GRAPPA2"  
+            }
+         }
+    ]
+}
